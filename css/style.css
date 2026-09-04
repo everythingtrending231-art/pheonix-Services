@@ -247,6 +247,48 @@ img, svg { max-width: 100%; display: block; }
   opacity: 0.9;
 }
 
+/* ---------- Energy flow animation (solar / wind / light motif) ---------- */
+/* Injected by js/main.js into .hero-graphic and .section--navy so the motif
+   stays perfectly consistent across every page without duplicating markup. */
+.section--navy { position: relative; overflow: hidden; }
+.section--navy > .wrap { position: relative; z-index: 1; }
+
+.energy-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+.energy-overlay svg { width: 100%; height: 100%; display: block; }
+.energy-overlay--subtle { opacity: 0.5; }
+
+.energy-glow { animation: energy-pulse 7s ease-in-out infinite; transform-origin: center; }
+.energy-line { stroke-dasharray: 8 14; animation: energy-flow 5s linear infinite; }
+.energy-line--slow { animation-duration: 8s; }
+.energy-wind { animation: energy-drift 11s ease-in-out infinite; transform-origin: center; }
+.energy-particle {
+  animation: particle-rise 6s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@keyframes energy-pulse {
+  0%, 100% { opacity: 0.35; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.1); }
+}
+@keyframes energy-flow { to { stroke-dashoffset: -220; } }
+@keyframes energy-drift {
+  0%, 100% { transform: translateX(-1.5%); }
+  50% { transform: translateX(1.5%); }
+}
+@keyframes particle-rise {
+  0% { transform: translate(0, 0); opacity: 0; }
+  15% { opacity: 0.85; }
+  85% { opacity: 0.25; }
+  100% { transform: translate(var(--drift, 12px), -70px); opacity: 0; }
+}
+
 /* Reveal-on-load (single orchestrated hero moment) */
 .reveal > * {
   opacity: 0;
