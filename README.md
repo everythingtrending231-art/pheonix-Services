@@ -50,25 +50,23 @@ built against. **It must never be published as a live page:**
   reference, not customer-facing content. It is included here for editorial reference
   only — no page links to it, and it must not be given a public route.
 
-## Two open items before this goes live
+## One open item before this goes live
 
-These are flagged in the compliance guidelines and are **intentionally left
+This is flagged in the compliance guidelines and is **intentionally left
 unresolved** in this build, pending authorization:
 
-1. **Leadership page** (`leadership.html`) currently has one confirmed bio (Robert F.
-   Morris). Additional director/management profiles should be added before launch —
-   each new profile needs position, background, education, experience,
-   responsibilities and affiliations, all factual and substantiable (see
-   `content-source/11-website-content-guidelines.md`, §5 and §10 for the standard
-   these need to meet).
-2. **Zanet Energy partnership** (`partnerships.html`) is described under a softened
-   heading ("Regional Technical Partnership") with the relationship caveated in body
-   text. Confirm the disclosure has been formally authorized before publishing this
-   section as final — see `content-source/11-website-content-guidelines.md`, §5.
+- **Zanet Energy partnership** (`partnerships.html`) is described under a softened
+  heading ("Regional Technical Partnership") with the relationship caveated in body
+  text. Confirm the disclosure has been formally authorized before publishing this
+  section as final — see `content-source/11-website-content-guidelines.md`, §5.
 
-Do not strip the conditional/hedged language around either item until the
-underlying relationship or bio has actually been confirmed and cleared for
+Do not strip the conditional/hedged language around this item until the
+underlying relationship has actually been confirmed and cleared for
 publication.
+
+The leadership page is no longer an open item — all four executive profiles
+(CEO, Technical Manager, Finance Manager, Operations Manager) have been
+added as of October 2026.
 
 ## Editorial rules baked into this build
 
