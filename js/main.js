@@ -42,6 +42,139 @@ function injectEnergyFlow() {
   });
 }
 
+function prefersReducedMotion() {
+  return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+function hasFinePointer() {
+  return window.matchMedia && window.matchMedia('(pointer: fine)').matches;
+}
+
+/* A soft radial highlight that follows the cursor inside the hero banner. */
+function setupHeroGlow() {
+  if (prefersReducedMotion() || !hasFinePointer()) return;
+  document.querySelectorAll('.hero').forEach(function (hero) {
+    var glow = document.createElement('div');
+    glow.className = 'hero-glow';
+    glow.setAttribute('aria-hidden', 'true');
+    hero.appendChild(glow);
+    hero.addEventListener('mousemove', function (e) {
+      var rect = hero.getBoundingClientRect();
+      var x = ((e.clientX - rect.left) / rect.width) * 100;
+      var y = ((e.clientY - rect.top) / rect.height) * 100;
+      hero.style.setProperty('--mx', x + '%');
+      hero.style.setProperty('--my', y + '%');
+    });
+  });
+}
+
+/* Slow, subtle parallax drift on the hero artwork as the page scrolls. */
+function setupParallax() {
+  if (prefersReducedMotion()) return;
+  var targets = Array.prototype.slice.call(document.querySelectorAll('.hero-graphic'));
+  if (!targets.length) return;
+  var ticking = false;
+  function update() {
+    var y = window.scrollY || window.pageYOffset;
+    targets.forEach(function (el) {
+      el.style.transform = 'translateY(' + Math.min(y * 0.12, 60) + 'px)';
+    });
+    ticking = false;
+  }
+  window.addEventListener('scroll', function () {
+    if (!ticking) {
+      window.requestAnimationFrame(update);
+      ticking = true;
+    }
+  }, { passive: true });
+}
+
+/* Thin progress bar under the header that fills as the reader scrolls the page. */
+function setupScrollProgress() {
+  var bar = document.createElement('div');
+  bar.className = 'scroll-progress';
+  bar.setAttribute('aria-hidden', 'true');
+  document.body.appendChild(bar);
+  var ticking = false;
+  function update() {
+    var doc = document.documentElement;
+    var scrollable = doc.scrollHeight - doc.clientHeight;
+    var pct = scrollable > 0 ? (window.scrollY / scrollable) * 100 : 0;
+    bar.style.width = pct + '%';
+    ticking = false;
+  }
+  window.addEventListener('scroll', function () {
+    if (!ticking) {
+      window.requestAnimationFrame(update);
+      ticking = true;
+    }
+  }, { passive: true });
+  update();
+}
+
+/* Gives the sticky header a condensed, elevated look once the page has scrolled. */
+function setupHeaderScrollState() {
+  var header = document.querySelector('.site-header');
+  if (!header) return;
+  function update() {
+    header.classList.toggle('is-scrolled', window.scrollY > 24);
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  update();
+}
+
+/* Fades section content in as it enters the viewport. */
+function setupScrollReveal() {
+  var selector = '.card, .section-head, .pull-quote, .notice, .table-wrap, .roadmap-item, .factband';
+  var items = Array.prototype.slice.call(document.querySelectorAll(selector));
+  if (!items.length) return;
+
+  var seenPerParent = new Map();
+  items.forEach(function (el) {
+    el.classList.add('observe-reveal');
+    var parent = el.parentElement;
+    var siblingsSeen = seenPerParent.get(parent) || 0;
+    el.style.transitionDelay = Math.min(siblingsSeen * 70, 350) + 'ms';
+    seenPerParent.set(parent, siblingsSeen + 1);
+  });
+
+  if (!('IntersectionObserver' in window) || prefersReducedMotion()) {
+    items.forEach(function (el) { el.classList.add('is-visible'); });
+    return;
+  }
+
+  var observer = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  items.forEach(function (el) { observer.observe(el); });
+}
+
+/* A small circular button that appears after scrolling, for quick return to the top. */
+function setupBackToTop() {
+  var btn = document.createElement('button');
+  btn.className = 'back-to-top';
+  btn.type = 'button';
+  btn.setAttribute('aria-label', 'Back to top');
+  btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>';
+  document.body.appendChild(btn);
+
+  btn.addEventListener('click', function () {
+    window.scrollTo({ top: 0, behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
+  });
+
+  function update() {
+    btn.classList.toggle('is-visible', window.scrollY > 600);
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  update();
+}
+
 document.addEventListener('DOMContentLoaded', function () {
   var toggle = document.querySelector('.nav-toggle');
   var nav = document.querySelector('.main-nav');
@@ -63,4 +196,10 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   injectEnergyFlow();
+  setupHeroGlow();
+  setupParallax();
+  setupScrollProgress();
+  setupHeaderScrollState();
+  setupScrollReveal();
+  setupBackToTop();
 });
