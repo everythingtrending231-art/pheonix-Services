@@ -30,6 +30,7 @@ jobs:
           cp *.html _site/
           cp -r css _site/css
           cp -r js _site/js
+          cp -r img _site/img
           # README.md and content-source/ are internal reference material and
           # must never be published as part of the live site.
 

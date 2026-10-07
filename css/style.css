@@ -89,6 +89,7 @@ h1, h2, h3, h4 {
   margin: 0 0 0.5em;
   letter-spacing: -0.01em;
   color: var(--navy);
+  text-wrap: balance;
 }
 
 h1 { font-size: var(--step-5); font-weight: 500; }
@@ -96,9 +97,27 @@ h2 { font-size: var(--step-3); }
 h3 { font-size: var(--step-2); }
 h4 { font-size: var(--step-1); font-family: var(--font-body); font-weight: 600; color: var(--ink); }
 
-p { margin: 0 0 1.1em; max-width: var(--measure); }
+p { margin: 0 0 1.1em; max-width: var(--measure); text-wrap: pretty; }
 a { color: var(--navy); }
 .section p:last-child { margin-bottom: 0; }
+
+/* ---------- Skip link (keyboard accessibility) ---------- */
+.skip-link {
+  position: fixed;
+  top: -3rem;
+  left: 1rem;
+  z-index: 100;
+  background: var(--navy);
+  color: var(--paper);
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 0.88rem;
+  text-decoration: none;
+  transition: top 0.2s var(--ease);
+}
+.skip-link:focus { top: 1rem; }
 
 img, svg { max-width: 100%; display: block; }
 
@@ -380,6 +399,19 @@ img, svg { max-width: 100%; display: block; }
   .hero-glow { display: none; }
 }
 
+/* Subtle grain texture on dark surfaces — breaks flat digital gradients */
+.hero::after,
+.section--navy::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
 /* ---------- Energy flow animation (solar / wind / light motif) ---------- */
 /* Injected by js/main.js into .hero-graphic and .section--navy so the motif
    stays perfectly consistent across every page without duplicating markup. */
@@ -493,17 +525,24 @@ img, svg { max-width: 100%; display: block; }
   gap: 1.5rem;
 }
 .factband dt { font-family: var(--font-mono); font-size: 0.72rem; color: var(--gold); text-transform: uppercase; letter-spacing: 0.04em; margin: 0 0 0.4rem; }
-.factband dd { margin: 0; font-family: var(--font-display); font-size: 1.35rem; color: var(--paper); }
+.factband dd { margin: 0; font-family: var(--font-display); font-size: 1.35rem; color: var(--paper); font-variant-numeric: tabular-nums; }
 
 /* ---------- Cards ---------- */
 .card {
   position: relative;
-  background: var(--paper);
+  --mx: 50%;
+  --my: 50%;
+  --spot-o: 0;
+  background: radial-gradient(260px circle at var(--mx) var(--my), rgba(227, 164, 56, var(--spot-o)), transparent 70%), var(--paper);
   border: 1px solid var(--line);
   padding: 1.9rem;
   border-radius: var(--radius);
   overflow: hidden;
-  transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease), border-color 0.3s var(--ease);
+  transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease), border-color 0.3s var(--ease), background-color 0.2s var(--ease);
+}
+.card:hover { --spot-o: 0.16; }
+@media (prefers-reduced-motion: reduce), (pointer: coarse) {
+  .card:hover { --spot-o: 0; }
 }
 .card::before {
   content: '';
@@ -612,7 +651,7 @@ img, svg { max-width: 100%; display: block; }
 }
 
 /* ---------- Table ---------- */
-.datatable { width: 100%; border-collapse: collapse; font-size: 0.94rem; }
+.datatable { width: 100%; border-collapse: collapse; font-size: 0.94rem; font-variant-numeric: tabular-nums; }
 .datatable th, .datatable td { text-align: left; padding: 0.85rem 1rem; border-bottom: 1px solid var(--line); vertical-align: top; transition: background 0.15s var(--ease); }
 .datatable tr:hover td, .datatable tr:hover th { background: var(--sage); }
 .datatable th { font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.03em; color: var(--ink-soft); font-weight: 500; width: 40%; }

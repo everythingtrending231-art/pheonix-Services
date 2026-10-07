@@ -68,6 +68,20 @@ function setupHeroGlow() {
   });
 }
 
+/* A soft gold spotlight that tracks the cursor inside each card. */
+function setupCardSpotlight() {
+  if (prefersReducedMotion() || !hasFinePointer()) return;
+  document.querySelectorAll('.card').forEach(function (card) {
+    card.addEventListener('mousemove', function (e) {
+      var rect = card.getBoundingClientRect();
+      var x = ((e.clientX - rect.left) / rect.width) * 100;
+      var y = ((e.clientY - rect.top) / rect.height) * 100;
+      card.style.setProperty('--mx', x + '%');
+      card.style.setProperty('--my', y + '%');
+    });
+  });
+}
+
 /* Slow, subtle parallax drift on the hero artwork as the page scrolls. */
 function setupParallax() {
   if (prefersReducedMotion()) return;
@@ -197,6 +211,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   injectEnergyFlow();
   setupHeroGlow();
+  setupCardSpotlight();
   setupParallax();
   setupScrollProgress();
   setupHeaderScrollState();
