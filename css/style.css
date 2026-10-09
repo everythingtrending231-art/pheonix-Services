@@ -198,7 +198,7 @@ img, svg { max-width: 100%; display: block; }
   text-decoration: none;
   color: var(--navy);
 }
-.brand-mark { width: 30px; height: 30px; flex-shrink: 0; transition: transform 0.4s var(--ease-snap); }
+.brand-mark { width: 30px; height: 30px; object-fit: contain; flex-shrink: 0; transition: transform 0.4s var(--ease-snap); }
 .brand:hover .brand-mark { transform: rotate(50deg); }
 .brand-word {
   font-family: var(--font-display);
